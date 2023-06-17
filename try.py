@@ -84,3 +84,15 @@ response = openai.Completion.create(
 
 
 response['choices'][0]["text"]
+
+
+def num_tokens_from_messages(messages, encoding):
+    num_tokens = 0
+    for message in messages:
+        num_tokens += 4  # every message follows <im_start>{role/name}\n{content}<im_end>\n
+        num_tokens += len(encoding.encode(message['content'])) + 1 # 1 is added to take into consideration the role
+    num_tokens += 2  # every reply is primed with <im_start>assistant
+    return num_tokens
+
+encoding = tiktoken.encoding_for_model("text-davinci-003")
+num_tokens_from_messages(history,encoding)
